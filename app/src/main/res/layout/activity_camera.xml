@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/ll_camera_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <com.ui.jerry.CameraView
+                android:id="@+id/cameraView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/px_96"
+                android:background="@color/color_262626_80">
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:descendantFocusability="afterDescendants"
+                    android:focusable="true"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_flashlight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_camera_direction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_262626">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/px_50"
+            android:paddingRight="@dimen/px_50">
+
+            <ImageButton
+                android:layout_width="@dimen/px_96"
+                android:layout_height="@dimen/px_96"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:clickable="true"
+                android:onClick="onExitClicked"
+                android:src="@drawable/selector_btn_camera_exit" />
+
+            <ImageButton
+                android:layout_width="@dimen/px_180"
+                android:layout_height="@dimen/px_180"
+                android:layout_centerInParent="true"
+                android:background="@null"
+                android:onClick="onTakePhotoClicked"
+                android:src="@drawable/selector_btn_shutter" />
+
+            <ImageButton
+                android:layout_width="@dimen/px_96"
+                android:layout_height="@dimen/px_96"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@null" />
+
+        </RelativeLayout>
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--flashlight off-->
+    <item android:maxLevel="0">
+        <selector>
+            <item android:state_pressed="true" android:drawable="@drawable/camera_icon_flashlight_off_pressed"/>
+            <item android:drawable="@drawable/camera_icon_flashlight_off"/>
+        </selector>
+    </item>
+
+    <!--flashlight on-->
+    <item android:maxLevel="1">
+        <selector>
+            <item android:state_pressed="true" android:drawable="@drawable/camera_icon_flashlight_on_pressed"/>
+            <item android:drawable="@drawable/camera_icon_flashlight_on"/>
+        </selector>
+    </item>
+
+    <!--flashlight auto-->
+    <item android:maxLevel="2">
+        <selector>
+            <item android:state_pressed="true" android:drawable="@drawable/camera_icon_flashlight_auto_pressed"/>
+            <item android:drawable="@drawable/camera_icon_flashlight_auto"/>
+        </selector>
+    </item>
+</level-list>

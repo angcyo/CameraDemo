@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">CameraDemo</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="tips_camera_not_exist">不存在相机设备</string>
+
+    <string name="topic_camera_flashlight_off">关闭</string>
+    <string name="topic_camera_flashlight_on">开启</string>
+    <string name="topic_camera_flashlight_auto">自动</string>
+
+    <string name="topic_camera_front">前镜头</string>
+    <string name="topic_camera_back">后镜头</string>
+
+    <string name="topic_camera_takephoto_failure">拍照失败</string>
+</resources>
