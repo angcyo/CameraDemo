@@ -1,8 +1,26 @@
 package com.ui.jerry;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 public class FastBlur {
+
+    public static Bitmap blur(Bitmap bkg, int width, int height) {
+        long startMs = System.currentTimeMillis();
+        float radius = 2;
+        float scaleFactor = 8;
+
+        Bitmap overlay = Bitmap.createBitmap((int)(width/scaleFactor), (int)(height/scaleFactor), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(overlay);
+        canvas.scale(1 / scaleFactor, 1 / scaleFactor);
+        Paint paint = new Paint();
+        paint.setFlags(Paint.FILTER_BITMAP_FLAG);
+        canvas.drawBitmap(bkg, 0, 0, paint);
+        overlay = doBlur(overlay, (int)radius, true);
+
+       return overlay;
+    }
 
     public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
 

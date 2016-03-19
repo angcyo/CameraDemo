@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
 
 
         imageView = (ImageView) findViewById(R.id.image);
+        imageView.setRotation(90);
 
         handle = new ImageHandle();
     }

@@ -82,11 +82,11 @@ public class StartTakePhotoView extends SurfaceView implements SurfaceHolder.Cal
 
         Camera.Parameters parameters = mCamera.getParameters();
 //        parameters.setPictureSize(640, 480);
-//        parameters.setPreviewSize(640, 480);
+        parameters.setPreviewSize(640, 480);
 //        parameters.setPreviewSize(480, 320);
 //        parameters.setPreviewSize(320, 240);
 //        parameters.setPreviewSize(240, 160 );
-        parameters.setPreviewSize(176, 144 );
+//        parameters.setPreviewSize(176, 144 );
         mCamera.setParameters(parameters);
 
         try {
@@ -185,9 +185,9 @@ public class StartTakePhotoView extends SurfaceView implements SurfaceHolder.Cal
             Bitmap bitmap = Bitmap.createBitmap(rgb, cw, ch, Bitmap.Config.ARGB_8888);
 
             //图片切割成正方形
-            bitmap = cropImage(bitmap);
+//            bitmap = cropImage(bitmap);
             //图片缩放
-            bitmap = scaleImage(bitmap, (float) width / bitmap.getWidth(), (float) height / bitmap.getHeight());
+//            bitmap = scaleImage(bitmap, (float) width / bitmap.getWidth(), (float) height / bitmap.getHeight());
 
             draw(bitmap);
             return true;
@@ -238,10 +238,12 @@ public class StartTakePhotoView extends SurfaceView implements SurfaceHolder.Cal
         int originHeight = bitmap.getHeight();
 
 //        bitmap =BitmapUtils.resizeBmp(bitmap,(int)(originWidth/scaleUp),(int)(originHeight/scaleUp));
-        bitmap = BitmapUtils.scale(bitmap,scaleDown);
-        bitmap = FastBlur.doBlur(bitmap, 30, true);
+//        bitmap = BitmapUtils.scale(bitmap,scaleDown);
+//        bitmap = FastBlur.doBlur(bitmap, 30, true);
+        bitmap = FastBlur.blur(bitmap, 320, 480);
+//        bitmap = FastBlur.doBlur(FastBlur.blur(bitmap, 320, 480), 5, true);
 //        bitmap =BitmapUtils.resizeBmp(bitmap,originWidth,originHeight);
-        bitmap = BitmapUtils.scale(bitmap,scaleUp);
+//        bitmap = BitmapUtils.scale(bitmap,scaleUp);
         Log.i(TAG, "blurCommon time:" + (System.currentTimeMillis() - lastTime));
 //        canvas.drawBitmap(bitmap, 0, 0, mPaint);
 
