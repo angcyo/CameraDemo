@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':example3_2'
 include ':libstreaming'
 include ':example1'
 include ':example2'
