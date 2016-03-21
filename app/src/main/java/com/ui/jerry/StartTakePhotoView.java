@@ -16,7 +16,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Vector;
 
@@ -74,6 +74,12 @@ public class StartTakePhotoView extends SurfaceView implements SurfaceHolder.Cal
 //        Log.i(TAG,"main Thread pid:"+Thread.currentThread().getId());
     }
 
+    public static byte[] Bitmap2Bytes(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+        return baos.toByteArray();
+    }
+
     void initCamera() {
         mCamera = mCameraManager.openCameraFacing(Camera.CameraInfo.CAMERA_FACING_BACK);
         mCameraManager.setDispaly(mCamera);
@@ -119,6 +125,8 @@ public class StartTakePhotoView extends SurfaceView implements SurfaceHolder.Cal
         Log.i(TAG, "surfaceDestroyed");
 
         releaseCamera();
+
+        UdpSendThread.getInstance().exit();
     }
 
     @Override
@@ -127,7 +135,7 @@ public class StartTakePhotoView extends SurfaceView implements SurfaceHolder.Cal
         Log.i(TAG, "onPreviewFrame Thread:" + Thread.currentThread().getName());
 
         //每次只处理一个图像，若前面的图像未处理完成，舍弃当前图像，提升性能
-        if(mVector.isEmpty()){
+        if (mVector.isEmpty()) {
             Log.i(TAG, "byte data ADD");
             mVector.add(data);
             new DrawTask().execute();
@@ -162,44 +170,6 @@ public class StartTakePhotoView extends SurfaceView implements SurfaceHolder.Cal
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
     }
 
-    private class DrawTask extends AsyncTask<Void,Void,Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            byte[] data =mVector.firstElement();
-
-            int width = getMeasuredWidth();
-            int height = getMeasuredHeight();
-
-            int cw = mCamera.getParameters().getPreviewSize().width;
-            int ch = mCamera.getParameters().getPreviewSize().height;
-            int[] rgb = new int[cw * ch];
-
-            long lastTime = System.currentTimeMillis();
-//            decodeYUV420SP(rgb, data, cw, ch);
-            GPUImageNativeLibrary.YUVtoARBG(data, cw, ch,
-                    rgb);
-            Log.i(TAG, "decodeYUV420SP time:" + (System.currentTimeMillis() - lastTime));
-
-//            Bitmap bitmap = Bitmap.createBitmap(rgb, 100, 100, Bitmap.Config.ARGB_8888);
-            Bitmap bitmap = Bitmap.createBitmap(rgb, cw, ch, Bitmap.Config.ARGB_8888);
-
-            //图片切割成正方形
-//            bitmap = cropImage(bitmap);
-            //图片缩放
-//            bitmap = scaleImage(bitmap, (float) width / bitmap.getWidth(), (float) height / bitmap.getHeight());
-
-            draw(bitmap);
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean flag) {
-            //移除该元素
-            mVector.remove(0);
-        }
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -216,7 +186,7 @@ public class StartTakePhotoView extends SurfaceView implements SurfaceHolder.Cal
 
     private void draw(Bitmap bitmap) {
         float scaleUp = 3.0f; //缩放比例
-        float scaleDown = 1/scaleUp;
+        float scaleDown = 1 / scaleUp;
 
 //        Canvas canvas = holder.lockCanvas();  // 获取画布
 //        if (canvas == null) {
@@ -259,6 +229,52 @@ public class StartTakePhotoView extends SurfaceView implements SurfaceHolder.Cal
 //        if (bitmap != null && !bitmap.isRecycled()) {
 //            bitmap.recycle();
 //        }
+    }
+
+    private class DrawTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            byte[] data = mVector.firstElement();
+
+//            int width = getMeasuredWidth();
+//            int height = getMeasuredHeight();
+
+            int cw = mCamera.getParameters().getPreviewSize().width;
+            int ch = mCamera.getParameters().getPreviewSize().height;
+            int[] rgb = new int[cw * ch];
+
+            long lastTime = System.currentTimeMillis();
+//            decodeYUV420SP(rgb, data, cw, ch);
+            GPUImageNativeLibrary.YUVtoARBG(data, cw, ch, rgb);
+            Log.i(TAG, "decodeYUV420SP time:" + (System.currentTimeMillis() - lastTime));
+
+            Bitmap bitmap = Bitmap.createBitmap(rgb, 640, 480, Bitmap.Config.ARGB_8888);
+            MainActivity.handle.sendMessage(MainActivity.handle.obtainMessage(111, bitmap));
+
+            byte[] bytes = Bitmap2Bytes(bitmap);
+            UdpSendThread.getInstance().send(bytes);
+
+//            byte[] bytes = UdpSendThread.intsToBytes(rgb);
+//            UdpSendThread.getInstance().send(bytes);
+
+//            Bitmap bitmap = Bitmap.createBitmap(rgb, cw, ch, Bitmap.Config.ARGB_8888);
+
+            //图片切割成正方形
+//            bitmap = cropImage(bitmap);
+            //图片缩放
+//            bitmap = scaleImage(bitmap, (float) width / bitmap.getWidth(), (float) height / bitmap.getHeight());
+
+//            draw(bitmap);
+//            bitmap = FastBlur.blur(bitmap, 320, 480);//模糊
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean flag) {
+            //移除该元素
+            mVector.remove(0);
+        }
     }
 }
 

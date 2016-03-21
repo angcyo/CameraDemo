@@ -28,7 +28,6 @@ public class MainActivity extends Activity {
 //
 //        startTakePhotoView.setLayoutParams(params);
 
-
         imageView = (ImageView) findViewById(R.id.image);
         imageView.setRotation(90);
 
