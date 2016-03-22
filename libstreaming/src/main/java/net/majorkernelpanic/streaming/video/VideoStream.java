@@ -20,22 +20,6 @@
 
 package net.majorkernelpanic.streaming.video;
 
-import java.io.FileDescriptor;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-
-import net.majorkernelpanic.streaming.MediaStream;
-import net.majorkernelpanic.streaming.Stream;
-import net.majorkernelpanic.streaming.exceptions.CameraInUseException;
-import net.majorkernelpanic.streaming.exceptions.ConfNotSupportedException;
-import net.majorkernelpanic.streaming.exceptions.InvalidSurfaceException;
-import net.majorkernelpanic.streaming.gl.SurfaceView;
-import net.majorkernelpanic.streaming.hw.EncoderDebugger;
-import net.majorkernelpanic.streaming.hw.NV21Convertor;
-import net.majorkernelpanic.streaming.rtp.MediaCodecInputStream;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -52,6 +36,23 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
+
+import net.majorkernelpanic.streaming.MediaStream;
+import net.majorkernelpanic.streaming.Stream;
+import net.majorkernelpanic.streaming.exceptions.CameraInUseException;
+import net.majorkernelpanic.streaming.exceptions.ConfNotSupportedException;
+import net.majorkernelpanic.streaming.exceptions.InvalidSurfaceException;
+import net.majorkernelpanic.streaming.gl.SurfaceView;
+import net.majorkernelpanic.streaming.hw.EncoderDebugger;
+import net.majorkernelpanic.streaming.hw.NV21Convertor;
+import net.majorkernelpanic.streaming.rtp.MediaCodecInputStream;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /** 
  * Don't use this class directly.
@@ -552,6 +553,8 @@ public abstract class VideoStream extends MediaStream {
 				mCameraLooper = Looper.myLooper();
 				try {
 					mCamera = Camera.open(mCameraId);
+
+					mCamera.setDisplayOrientation(90);
 				} catch (RuntimeException e) {
 					exception[0] = e;
 				} finally {
@@ -600,7 +603,12 @@ public abstract class VideoStream extends MediaStream {
 				if (parameters.getFlashMode()!=null) {
 					parameters.setFlashMode(mFlashEnabled?Parameters.FLASH_MODE_TORCH:Parameters.FLASH_MODE_OFF);
 				}
-				parameters.setRecordingHint(true);
+
+				parameters.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+//				parameters.setRecordingHint(true);
+				parameters.setPictureSize(1920,1080);
+				parameters.setPreviewSize(1920,1080);
+
 				mCamera.setParameters(parameters);
 				mCamera.setDisplayOrientation(mOrientation);
 
